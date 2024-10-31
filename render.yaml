@@ -2,8 +2,7 @@ version: 1
 services:
   - type: web
     name: Sorobooks_Backend
-    env: docker
-    docker:
-      buildCommand: docker build -t sorobooks-backend .
-      startCommand: docker run -p 8080:8080 sorobooks-backend
-    autoDeploy: true
+    env: java
+    plan: free
+    buildCommand: mvn clean package
+    startCommand: java -jar target/demo-0.0.1-SNAPSHOT.jar
