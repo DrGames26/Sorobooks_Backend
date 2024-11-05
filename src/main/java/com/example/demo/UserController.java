@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "https://sorobooks.onrender.com")
 @RestController
 @RequestMapping("/api")
 public class UserController {
