@@ -62,6 +62,7 @@ public class UserController {
                 response.put("name", user.getName());
                 response.put("email", user.getEmail());
                 response.put("sex", user.getSex());
+                response.put("profilePicture", user.getProfilePicture());
 
                 return ResponseEntity.ok(response);
             } else {
