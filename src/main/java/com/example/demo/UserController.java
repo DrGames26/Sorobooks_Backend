@@ -39,12 +39,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserEntity>> listUsers() {
-        List<UserEntity> users = userService.findAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody UserEntity userEntity) {
         try {
@@ -53,7 +47,6 @@ public class UserController {
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Busca o usuário autenticado e prepara a resposta
             Optional<UserEntity> userOptional = userService.findByEmail(userEntity.getEmail());
             if (userOptional.isPresent()) {
                 UserEntity user = userOptional.get();
@@ -63,6 +56,7 @@ public class UserController {
                 response.put("email", user.getEmail());
                 response.put("sex", user.getSex());
                 response.put("profilePicture", user.getProfilePicture());
+                response.put("phoneNumber", user.getPhoneNumber()); // Novo campo
 
                 return ResponseEntity.ok(response);
             } else {
@@ -74,4 +68,5 @@ public class UserController {
                     .body(Map.of("error", "Invalid username or password."));
         }
     }
+
 }

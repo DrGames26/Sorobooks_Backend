@@ -35,6 +35,9 @@ public class UserEntity {
     @Column(name = "sex", nullable = false)
     private String sex;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
     @Column(name = "profile_picture")
     private String profilePicture;
 
@@ -59,6 +62,8 @@ public class UserEntity {
     public void setSex(String sex) { this.sex = sex; }
     public String getProfilePicture() { return profilePicture; }
     public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public Set<String> getRoles() { return roles; }
     public void setRoles(Set<String> roles) { this.roles = roles; }
 }
