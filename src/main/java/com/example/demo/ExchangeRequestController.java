@@ -18,13 +18,20 @@ public class ExchangeRequestController {
     }
 
     @PostMapping("/request")
-    public ExchangeRequestEntity requestExchange(@RequestBody ExchangeRequestEntity request) {
-        return exchangeRequestService.createExchangeRequest(request);
+    public ResponseEntity<ExchangeRequestEntity> requestExchange(@RequestBody ExchangeRequestEntity request) {
+        ExchangeRequestEntity createdRequest = exchangeRequestService.createExchangeRequest(request);
+        return ResponseEntity.status(201).body(createdRequest); // Retornando 201 (Created)
     }
 
     @GetMapping("/requests")
     public List<ExchangeRequestEntity> listExchangeRequests() {
         return exchangeRequestService.findAllExchangeRequests();
+    }
+
+    // Novo endpoint para listar solicitações pendentes
+    @GetMapping("/pending")
+    public List<ExchangeRequestEntity> listPendingRequests() {
+        return exchangeRequestService.findRequestsByStatus("pending");
     }
 
     @PutMapping("/{id}/status")

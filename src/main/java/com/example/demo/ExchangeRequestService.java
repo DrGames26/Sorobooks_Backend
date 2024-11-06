@@ -49,4 +49,10 @@ public class ExchangeRequestService {
         }
         return null;
     }
+
+    // Novo método para encontrar solicitações com status específico
+    public List<ExchangeRequestEntity> findRequestsByStatus(String status) {
+        // Assume-se que ExchangeRequestRepository tem um método para buscar por status
+        return exchangeRequestRepository.findByStatus(ExchangeStatus.valueOf(status));
+    }
 }
