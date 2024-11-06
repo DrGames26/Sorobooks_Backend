@@ -23,4 +23,9 @@ public class BookService {
     public BookEntity addBook(BookEntity book) {
         return bookRepository.save(book); // Adiciona um novo livro
     }
+
+    // Método para encontrar livros pelo nome do usuário publicador
+    public List<BookEntity> findBooksByUser(String usuarioPublicador) {
+        return bookRepository.findByUsuarioPublicador(usuarioPublicador); // Busca livros com base no nome do usuário
+    }
 }
