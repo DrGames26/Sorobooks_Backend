@@ -20,8 +20,9 @@ public class ExchangeRequestEntity {
     @Column(name = "requester", nullable = false)
     private String requester; // Usuário que está solicitando a troca
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status = "PENDING"; // Status inicial como "PENDING"
+    private ExchangeStatus status = ExchangeStatus.PENDING; // Status inicial como "PENDING"
 
     @Column(name = "requested_date", nullable = false)
     private LocalDateTime requestedDate = LocalDateTime.now();
@@ -59,11 +60,11 @@ public class ExchangeRequestEntity {
         this.requester = requester;
     }
 
-    public String getStatus() {
+    public ExchangeStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ExchangeStatus status) {
         this.status = status;
     }
 
