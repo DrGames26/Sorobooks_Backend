@@ -37,16 +37,14 @@ public class ExchangeRequestController {
     @PutMapping("/{id}/status")
     public ResponseEntity<ExchangeRequestEntity> updateExchangeStatus(@PathVariable Long id, @RequestBody String status) {
         try {
-            // Converter o status de String para ExchangeStatus
             ExchangeStatus exchangeStatus = ExchangeStatus.valueOf(status.toUpperCase());
             ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, exchangeStatus);
-            // Notificar o usuário que recebeu a troca
             String message = "Sua solicitação de troca foi " + status.toLowerCase() + ".";
             notificationService.createNotification(updatedRequest.getRequester(), message);
             return ResponseEntity.ok(updatedRequest);
         } catch (IllegalArgumentException e) {
-            // Retornando erro 400 para status inválido
-            return ResponseEntity.badRequest().body(null); // ou um ResponseEntity com status 400
+            // Detalhando o erro para o usuário
+            return ResponseEntity.badRequest().body("Status inválido. Valores permitidos: PENDING, ACCEPTED, REJECTED, COMPLETED.");
         }
     }
 }
