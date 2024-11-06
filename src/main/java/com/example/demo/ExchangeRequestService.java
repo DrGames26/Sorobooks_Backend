@@ -32,27 +32,17 @@ public class ExchangeRequestService {
         return exchangeRequestRepository.findById(id);
     }
 
-    public ExchangeRequestEntity updateStatus(Long id, String status) {
+    public List<ExchangeRequestEntity> findRequestsByStatus(ExchangeStatus status) {
+        return exchangeRequestRepository.findByStatus(status);  // Método corrigido para receber ExchangeStatus
+    }
+
+    public ExchangeRequestEntity updateStatus(Long id, ExchangeStatus status) {
         Optional<ExchangeRequestEntity> optionalRequest = exchangeRequestRepository.findById(id);
         if (optionalRequest.isPresent()) {
             ExchangeRequestEntity request = optionalRequest.get();
-
-            try {
-                ExchangeStatus exchangeStatus = ExchangeStatus.valueOf(status);
-                request.setStatus(exchangeStatus);
-            } catch (IllegalArgumentException e) {
-                // Retornando uma exceção mais detalhada
-                throw new IllegalArgumentException("Status inválido: " + status);
-            }
-
+            request.setStatus(status);
             return exchangeRequestRepository.save(request);
         }
         return null;
-    }
-
-    // Novo método para encontrar solicitações com status específico
-    public List<ExchangeRequestEntity> findRequestsByStatus(String status) {
-        // Assume-se que ExchangeRequestRepository tem um método para buscar por status
-        return exchangeRequestRepository.findByStatus(ExchangeStatus.valueOf(status));
     }
 }

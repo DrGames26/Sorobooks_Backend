@@ -31,13 +31,15 @@ public class ExchangeRequestController {
     // Novo endpoint para listar solicitações pendentes
     @GetMapping("/pending")
     public List<ExchangeRequestEntity> listPendingRequests() {
-        return exchangeRequestService.findRequestsByStatus("pending");
+        return exchangeRequestService.findRequestsByStatus(ExchangeStatus.PENDING); // Usando o enum
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<ExchangeRequestEntity> updateExchangeStatus(@PathVariable Long id, @RequestBody String status) {
         try {
-            ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, status);
+            // Converter o status de String para ExchangeStatus
+            ExchangeStatus exchangeStatus = ExchangeStatus.valueOf(status.toUpperCase());
+            ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, exchangeStatus);
             // Notificar o usuário que recebeu a troca
             String message = "Sua solicitação de troca foi " + status.toLowerCase() + ".";
             notificationService.createNotification(updatedRequest.getRequester(), message);
