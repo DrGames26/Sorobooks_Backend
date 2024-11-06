@@ -28,7 +28,15 @@ public class ExchangeRequestService {
         Optional<ExchangeRequestEntity> optionalRequest = exchangeRequestRepository.findById(id);
         if (optionalRequest.isPresent()) {
             ExchangeRequestEntity request = optionalRequest.get();
-            request.setStatus(status);
+
+            try {
+
+                ExchangeStatus exchangeStatus = ExchangeStatus.valueOf(status);
+                request.setStatus(exchangeStatus);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+
             return exchangeRequestRepository.save(request);
         }
         return null; // ou lançar uma exceção, se preferir

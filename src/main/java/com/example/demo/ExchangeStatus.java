@@ -1,5 +1,5 @@
 package com.example.demo;
 
 public enum ExchangeStatus {
-    PENDING, ACCEPTED, REJECTED;
+    PENDING, ACCEPTED, REJECTED, COMPLETED;
 }
