@@ -3,6 +3,7 @@ package com.example.demo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "exchange_requests")
 public class ExchangeRequestEntity {
@@ -11,18 +12,20 @@ public class ExchangeRequestEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "requested_book_id", nullable = false)
-    private Long requestedBookId;
+    @ManyToOne
+    @JoinColumn(name = "requested_book_id", nullable = false)
+    private BookEntity requestedBook;
 
-    @Column(name = "offered_book_id", nullable = false)
-    private Long offeredBookId;
+    @ManyToOne
+    @JoinColumn(name = "offered_book_id", nullable = false)
+    private BookEntity offeredBook;
 
     @Column(name = "requester", nullable = false)
-    private String requester; // Usuário que está solicitando a troca
+    private String requester;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private ExchangeStatus status = ExchangeStatus.PENDING; // Status inicial como "PENDING"
+    private ExchangeStatus status = ExchangeStatus.PENDING;
 
     @Column(name = "requested_date", nullable = false)
     private LocalDateTime requestedDate = LocalDateTime.now();
@@ -36,20 +39,20 @@ public class ExchangeRequestEntity {
         this.id = id;
     }
 
-    public Long getRequestedBookId() {
-        return requestedBookId;
+    public BookEntity getRequestedBook() {
+        return requestedBook;
     }
 
-    public void setRequestedBookId(Long requestedBookId) {
-        this.requestedBookId = requestedBookId;
+    public void setRequestedBook(BookEntity requestedBook) {
+        this.requestedBook = requestedBook;
     }
 
-    public Long getOfferedBookId() {
-        return offeredBookId;
+    public BookEntity getOfferedBook() {
+        return offeredBook;
     }
 
-    public void setOfferedBookId(Long offeredBookId) {
-        this.offeredBookId = offeredBookId;
+    public void setOfferedBook(BookEntity offeredBook) {
+        this.offeredBook = offeredBook;
     }
 
     public String getRequester() {
