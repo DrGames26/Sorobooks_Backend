@@ -25,7 +25,7 @@ public class ExchangeRequestController {
     @PostMapping("/request")
     public ResponseEntity<?> requestExchange(@RequestBody ExchangeRequestEntity request) {
         // Verifica se o usuário está autenticado (verifique o login do usuário, por exemplo, pelo contexto de segurança)
-        if (request.getRequester() == null || request.getRequestedBookId() == null || request.getOfferedBookId() == null) {
+        if (request.getRequester() == null || request.getRequestedBook() == null || request.getOfferedBook() == null) {
             return ResponseEntity.badRequest().body("Os campos de usuário e livros são obrigatórios.");
         }
 
@@ -87,3 +87,4 @@ public class ExchangeRequestController {
         }
     }
 }
+

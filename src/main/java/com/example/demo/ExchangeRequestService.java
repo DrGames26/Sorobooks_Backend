@@ -17,7 +17,9 @@ public class ExchangeRequestService {
 
     public ExchangeRequestEntity createExchangeRequest(ExchangeRequestEntity request) {
         // Validar se os livros existem antes de criar a solicitação
-        if (!bookRepository.existsById(request.getRequestedBookId()) || !bookRepository.existsById(request.getOfferedBookId())) {
+        if (request.getRequestedBook() == null || request.getOfferedBook() == null
+                || !bookRepository.existsById(request.getRequestedBook().getId())
+                || !bookRepository.existsById(request.getOfferedBook().getId())) {
             throw new RuntimeException("Um ou mais livros não existem.");
         }
 
