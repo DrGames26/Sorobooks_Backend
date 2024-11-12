@@ -14,7 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -69,11 +73,45 @@ public class UserController {
         }
     }
 
-    // Novo método para listar todos os usuários
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers() {
         List<UserEntity> users = userService.findAllUsers();
         return ResponseEntity.ok(users);
     }
-}
 
+    // Novo método para editar o usuário
+    @PutMapping("/users/{email}")
+    public ResponseEntity<UserEntity> updateUser(@PathVariable String email, @RequestBody UserEntity updatedUser) {
+        Optional<UserEntity> userOptional = userService.findByEmail(email);
+        if (userOptional.isPresent()) {
+            UserEntity existingUser = userOptional.get();
+            existingUser.setName(updatedUser.getName());
+            existingUser.setPassword(updatedUser.getPassword());
+            existingUser.setSex(updatedUser.getSex());
+            existingUser.setProfilePicture(updatedUser.getProfilePicture());
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+
+            // Atualizar o usuário no banco de dados
+            UserEntity savedUser = userService.saveUser(existingUser);
+            return ResponseEntity.ok(savedUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        }
+    }
+
+    // Novo método para excluir o usuário
+    @DeleteMapping("/users/{email}")
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable String email) {
+        Optional<UserEntity> userOptional = userService.findByEmail(email);
+        if (userOptional.isPresent()) {
+            userService.deleteByEmail(email);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "User deleted successfully.");
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "User not found."));
+        }
+    }
+}
