@@ -69,4 +69,11 @@ public class UserController {
         }
     }
 
+    // Novo método para listar todos os usuários
+    @GetMapping("/users")
+    public ResponseEntity<List<UserEntity>> getAllUsers() {
+        List<UserEntity> users = userService.findAllUsers();
+        return ResponseEntity.ok(users);
+    }
 }
+
