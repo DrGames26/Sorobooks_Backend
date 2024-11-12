@@ -2,7 +2,6 @@ package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -12,41 +11,41 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    // Método para encontrar um livro pelo ID
+    // Encontrar livro pelo ID
     public Optional<BookEntity> findById(Long id) {
-        return bookRepository.findById(id); // Usando o método do repositório
+        return bookRepository.findById(id);
     }
 
-    // Método para listar todos os livros
+    // Listar todos os livros
     public List<BookEntity> findAllBooks() {
-        return bookRepository.findAll(); // Retorna todos os livros
+        return bookRepository.findAll();
     }
 
-    // Método para adicionar um novo livro
+    // Adicionar novo livro
     public BookEntity addBook(BookEntity book) {
-        return bookRepository.save(book); // Adiciona um novo livro
+        return bookRepository.save(book);
     }
 
-    // Método para encontrar livros pelo nome do usuário publicador
+    // Encontrar livros pelo nome do usuário publicador
     public List<BookEntity> findBooksByUser(String usuarioPublicador) {
-        return bookRepository.findByUsuarioPublicador(usuarioPublicador); // Busca livros com base no nome do usuário
+        return bookRepository.findByUsuarioPublicador(usuarioPublicador);
     }
 
-    // Método para atualizar um livro
+    // Atualizar um livro
     public Optional<BookEntity> updateBook(Long id, BookEntity book) {
-        if (bookRepository.existsById(id)) { // Verifica se o livro existe
-            book.setId(id); // Garante que o ID do livro será mantido
-            return Optional.of(bookRepository.save(book)); // Atualiza o livro
+        if (bookRepository.existsById(id)) {
+            book.setId(id);
+            return Optional.of(bookRepository.save(book));
         }
-        return Optional.empty(); // Retorna vazio se não encontrar o livro
+        return Optional.empty();
     }
 
-    // Método para excluir um livro
+    // Excluir um livro
     public boolean deleteBook(Long id) {
         if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id); // Exclui o livro
+            bookRepository.deleteById(id);
             return true;
         }
-        return false; // Retorna falso se não encontrar o livro
+        return false;
     }
 }
