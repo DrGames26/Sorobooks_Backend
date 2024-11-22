@@ -3,7 +3,6 @@ package com.example.demo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-
 @Entity
 @Table(name = "exchange_requests")
 public class ExchangeRequestEntity {
@@ -22,6 +21,9 @@ public class ExchangeRequestEntity {
 
     @Column(name = "requester", nullable = false)
     private String requester;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -61,6 +63,14 @@ public class ExchangeRequestEntity {
 
     public void setRequester(String requester) {
         this.requester = requester;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;  // Getter para o número de telefone
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;  // Setter para o número de telefone
     }
 
     public ExchangeStatus getStatus() {

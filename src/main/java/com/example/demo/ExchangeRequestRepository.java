@@ -6,4 +6,3 @@ import java.util.List;
 public interface ExchangeRequestRepository extends JpaRepository<ExchangeRequestEntity, Long> {
     List<ExchangeRequestEntity> findByStatus(ExchangeStatus status);
 }
-
