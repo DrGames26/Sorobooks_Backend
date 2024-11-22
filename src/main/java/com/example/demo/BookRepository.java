@@ -1,10 +1,13 @@
-    package com.example.demo;
+package com.example.demo;
 
-    import org.springframework.data.jpa.repository.JpaRepository;
-    import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-    public interface BookRepository extends JpaRepository<BookEntity, Long> {
+public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
-        // Novo método para buscar livros pelo nome do usuário publicador
-        List<BookEntity> findByUsuarioPublicador(String usuarioPublicador); // Busca livros por usuário
-    }
+    // Método para buscar livros pelo nome do usuário publicador
+    List<BookEntity> findByUsuarioPublicador(String usuarioPublicador);
+
+    // Novo método para buscar livros pelo número de telefone
+    List<BookEntity> findByPhoneNumber(String phoneNumber); // Busca livros pelo número de telefone
+}

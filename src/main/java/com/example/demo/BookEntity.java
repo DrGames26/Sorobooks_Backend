@@ -31,8 +31,11 @@ public class BookEntity {
     @Column(name = "picture")
     private String picture;
 
-    @Column(name = "usuario_publicador") // Nova coluna para o usuário publicador
-    private String usuarioPublicador;
+    @Column(name = "usuario_publicador") // Mantido para o usuário publicador
+    private String usuarioPublicador; // Coluna para o nome de usuário publicador
+
+    @Column(name = "phone_number") // Nova coluna para o número de telefone
+    private String phoneNumber; // Coluna para o número de telefone
 
     // Getters and Setters for all fields
     public Long getId() {
@@ -89,5 +92,13 @@ public class BookEntity {
 
     public void setUsuarioPublicador(String usuarioPublicador) {
         this.usuarioPublicador = usuarioPublicador;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

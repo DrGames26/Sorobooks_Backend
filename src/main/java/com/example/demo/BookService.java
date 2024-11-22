@@ -31,6 +31,11 @@ public class BookService {
         return bookRepository.findByUsuarioPublicador(usuarioPublicador);
     }
 
+    // Encontrar livros pelo número de telefone do usuário publicador
+    public List<BookEntity> findBooksByPhoneNumber(String phoneNumber) {
+        return bookRepository.findByPhoneNumber(phoneNumber); // Busca livros pelo número de telefone
+    }
+
     // Atualizar um livro
     public Optional<BookEntity> updateBook(Long id, BookEntity book) {
         if (bookRepository.existsById(id)) {

@@ -1,8 +1,9 @@
 package com.example.demo;
 
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -39,6 +40,12 @@ public class BookController {
     @GetMapping("/my-books")
     public List<BookEntity> getBooksByUser(@RequestParam String usuarioPublicador) {
         return bookService.findBooksByUser(usuarioPublicador); // Retorna os livros do usuário publicador
+    }
+
+    // Endpoint para buscar os livros de um usuário pelo número de telefone
+    @GetMapping("/my-books-by-phone")
+    public List<BookEntity> getBooksByPhoneNumber(@RequestParam String phoneNumber) {
+        return bookService.findBooksByPhoneNumber(phoneNumber); // Retorna os livros do usuário pelo número de telefone
     }
 
     // Endpoint para editar um livro
