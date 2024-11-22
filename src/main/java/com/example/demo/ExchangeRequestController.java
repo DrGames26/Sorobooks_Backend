@@ -22,43 +22,68 @@ public class ExchangeRequestController {
         this.userService = userService;
     }
 
-    // Endpoint para aceitar a troca
-    @PutMapping("/accept/{id}")
-    public ResponseEntity<?> acceptExchange(@PathVariable Long id) {
-        try {
-            // Lógica para aceitar a troca
-            ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, ExchangeStatus.ACCEPTED);
-            if (updatedRequest == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            // Notifica o usuário que a troca foi aceita
-            String message = "Sua solicitação de troca foi aceita.";
-            notificationService.createNotification(updatedRequest.getRequester(), message);
-
-            return ResponseEntity.ok(updatedRequest);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro interno ao aceitar a troca.");
+    @PostMapping("/request")
+    public ResponseEntity<?> requestExchange(@RequestBody ExchangeRequestEntity request) {
+        // Verifica se o usuário está autenticado (verifique o login do usuário, por exemplo, pelo contexto de segurança)
+        if (request.getRequester() == null || request.getRequestedBook() == null || request.getOfferedBook() == null) {
+            return ResponseEntity.badRequest().body("Os campos de usuário e livros são obrigatórios.");
         }
+
+        // Verifica se o usuário existe
+        if (!userService.findByEmail(request.getRequester()).isPresent()) {
+            return ResponseEntity.status(404).body("Usuário não encontrado.");
+        }
+
+        // Cria a solicitação de troca
+        ExchangeRequestEntity createdRequest = exchangeRequestService.createExchangeRequest(request);
+        return ResponseEntity.status(201).body(createdRequest); // Retornando 201 (Created)
     }
 
-    // Endpoint para recusar a troca
-    @PutMapping("/reject/{id}")
-    public ResponseEntity<?> rejectExchange(@PathVariable Long id) {
+    @GetMapping("/requests")
+    public ResponseEntity<List<ExchangeRequestEntity>> listExchangeRequests() {
+        List<ExchangeRequestEntity> requests = exchangeRequestService.findAllExchangeRequests();
+        return ResponseEntity.ok(requests);
+    }
+
+    // Novo endpoint para listar solicitações pendentes
+    @GetMapping("/pending")
+    public ResponseEntity<List<ExchangeRequestEntity>> listPendingRequests() {
+        List<ExchangeRequestEntity> pendingRequests = exchangeRequestService.findRequestsByStatus(ExchangeStatus.PENDING);
+        return ResponseEntity.ok(pendingRequests); // Usando o enum ExchangeStatus
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateExchangeStatus(@PathVariable Long id, @RequestBody Map<String, String> statusMap) {
         try {
-            // Lógica para recusar a troca
-            ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, ExchangeStatus.REJECTED);
-            if (updatedRequest == null) {
-                return ResponseEntity.notFound().build();
+            // Extrair o valor do campo 'status' do JSON
+            String statusValue = statusMap.get("status");
+
+            // Verifica se o status enviado é válido
+            if (statusValue == null || statusValue.isEmpty()) {
+                return ResponseEntity.badRequest().body("O campo 'status' é obrigatório.");
             }
 
-            // Notifica o usuário que a troca foi recusada
-            String message = "Sua solicitação de troca foi recusada.";
+            // Valida se o status é um valor permitido
+            ExchangeStatus exchangeStatus;
+            try {
+                exchangeStatus = ExchangeStatus.valueOf(statusValue.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Status inválido."); // Retorna erro 400 para status inválido
+            }
+
+            // Atualiza o status da solicitação
+            ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, exchangeStatus);
+            if (updatedRequest == null) {
+                return ResponseEntity.notFound().build(); // Retorna 404 se não encontrar a solicitação
+            }
+
+            // Notifica o usuário que recebeu a troca
+            String message = "Sua solicitação de troca foi " + statusValue.toLowerCase() + ".";
             notificationService.createNotification(updatedRequest.getRequester(), message);
 
             return ResponseEntity.ok(updatedRequest);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro interno ao recusar a troca.");
+            return ResponseEntity.status(500).body("Erro interno ao atualizar o status da solicitação.");
         }
     }
 }
