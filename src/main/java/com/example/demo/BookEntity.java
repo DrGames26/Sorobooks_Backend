@@ -1,11 +1,6 @@
 package com.example.demo;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "books")
@@ -28,16 +23,17 @@ public class BookEntity {
     @Column(name = "genre", nullable = false)
     private String genre;
 
+    @Lob // Define o campo como Large Object para arquivos binários
     @Column(name = "picture")
-    private String picture;
+    private byte[] picture;
 
-    @Column(name = "usuario_publicador") // Mantido para o usuário publicador
-    private String usuarioPublicador; // Coluna para o nome de usuário publicador
+    @Column(name = "usuario_publicador")
+    private String usuarioPublicador;
 
-    @Column(name = "phone_number") // Nova coluna para o número de telefone
-    private String phoneNumber; // Coluna para o número de telefone
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
-    // Getters and Setters for all fields
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -78,11 +74,11 @@ public class BookEntity {
         this.genre = genre;
     }
 
-    public String getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 
