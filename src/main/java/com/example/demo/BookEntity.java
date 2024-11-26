@@ -23,8 +23,7 @@ public class BookEntity {
     @Column(name = "genre", nullable = false)
     private String genre;
 
-    @Lob // Define o campo como Large Object para arquivos binários
-    @Column(name = "picture")
+    @Column(name = "picture", columnDefinition = "bytea")
     private byte[] picture;
 
     @Column(name = "usuario_publicador")
@@ -98,3 +97,4 @@ public class BookEntity {
         this.phoneNumber = phoneNumber;
     }
 }
+
