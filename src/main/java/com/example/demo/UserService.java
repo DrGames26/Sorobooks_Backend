@@ -19,7 +19,6 @@ public class UserService {
 
     @Transactional
     public UserEntity registerUser(UserEntity user) {
-        // Verifica se o email já existe
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new UserAlreadyExistsException("Email já cadastrado");
         }
