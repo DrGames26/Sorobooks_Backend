@@ -38,14 +38,11 @@ public class UserEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "profile_picture")
-    private String profilePicture;
+    @Column(name = "profile_picture", columnDefinition = "bytea")
+    private byte[] profilePicture;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;
-
-    public UserEntity() {
-    }
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -60,10 +57,11 @@ public class UserEntity {
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
     public String getSex() { return sex; }
     public void setSex(String sex) { this.sex = sex; }
-    public String getProfilePicture() { return profilePicture; }
-    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+    public byte[] getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(byte[] profilePicture) { this.profilePicture = profilePicture; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public Set<String> getRoles() { return roles; }
     public void setRoles(Set<String> roles) { this.roles = roles; }
 }
+

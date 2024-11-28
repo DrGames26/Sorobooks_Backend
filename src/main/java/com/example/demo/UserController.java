@@ -59,8 +59,8 @@ public class UserController {
                 response.put("name", user.getName());
                 response.put("email", user.getEmail());
                 response.put("sex", user.getSex());
-                response.put("profilePicture", user.getProfilePicture());
-                response.put("phoneNumber", user.getPhoneNumber()); // Novo campo
+                response.put("profilePicture", user.getProfilePicture()); // Devolvendo os bytes da imagem
+                response.put("phoneNumber", user.getPhoneNumber());
 
                 return ResponseEntity.ok(response);
             } else {
@@ -72,6 +72,7 @@ public class UserController {
                     .body(Map.of("error", "Invalid username or password."));
         }
     }
+
 
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers() {
