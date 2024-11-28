@@ -79,19 +79,31 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    // Novo método para editar o usuário
+    // Método para editar o usuário
     @PutMapping("/users/{email}")
     public ResponseEntity<UserEntity> updateUser(@PathVariable String email, @RequestBody UserEntity updatedUser) {
         Optional<UserEntity> userOptional = userService.findByEmail(email);
         if (userOptional.isPresent()) {
             UserEntity existingUser = userOptional.get();
-            existingUser.setName(updatedUser.getName());
-            existingUser.setPassword(updatedUser.getPassword());
-            existingUser.setSex(updatedUser.getSex());
-            existingUser.setProfilePicture(updatedUser.getProfilePicture());
-            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
 
-            // Atualizar o usuário no banco de dados
+            // Atualiza apenas os campos fornecidos
+            if (updatedUser.getName() != null) {
+                existingUser.setName(updatedUser.getName());
+            }
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                existingUser.setPassword(updatedUser.getPassword());
+            }
+            if (updatedUser.getSex() != null) {
+                existingUser.setSex(updatedUser.getSex());
+            }
+            if (updatedUser.getProfilePicture() != null) {
+                existingUser.setProfilePicture(updatedUser.getProfilePicture());
+            }
+            if (updatedUser.getPhoneNumber() != null) {
+                existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            }
+
+            // Atualiza o usuário no banco
             UserEntity savedUser = userService.saveUser(existingUser);
             return ResponseEntity.ok(savedUser);
         } else {
@@ -99,6 +111,7 @@ public class UserController {
                     .body(null);
         }
     }
+
 
     // Novo método para excluir o usuário
     @DeleteMapping("/users/{email}")
