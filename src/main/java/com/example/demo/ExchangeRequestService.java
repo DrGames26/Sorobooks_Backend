@@ -13,16 +13,14 @@ public class ExchangeRequestService {
     private ExchangeRequestRepository exchangeRequestRepository;
 
     @Autowired
-    private BookRepository bookRepository;  // Supondo que exista um repositório de livros
+    private BookRepository bookRepository;
 
     public ExchangeRequestEntity createExchangeRequest(ExchangeRequestEntity request) {
-        // Validar se os livros existem antes de criar a solicitação
         if (request.getRequestedBook() == null || request.getOfferedBook() == null
                 || !bookRepository.existsById(request.getRequestedBook().getId())
                 || !bookRepository.existsById(request.getOfferedBook().getId())) {
             throw new RuntimeException("Um ou mais livros não existem.");
         }
-
         return exchangeRequestRepository.save(request);
     }
 
@@ -35,7 +33,11 @@ public class ExchangeRequestService {
     }
 
     public List<ExchangeRequestEntity> findRequestsByStatus(ExchangeStatus status) {
-        return exchangeRequestRepository.findByStatus(status);  // Método corrigido para receber ExchangeStatus
+        return exchangeRequestRepository.findByStatus(status);
+    }
+
+    public List<ExchangeRequestEntity> findRequestsByRequestedBookOwner(String email) {
+        return exchangeRequestRepository.findRequestsByRequestedBookOwner(email);
     }
 
     public ExchangeRequestEntity updateStatus(Long id, ExchangeStatus status) {

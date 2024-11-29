@@ -3,6 +3,7 @@ package com.example.demo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -24,19 +25,16 @@ public class ExchangeRequestController {
 
     @PostMapping("/request")
     public ResponseEntity<?> requestExchange(@RequestBody ExchangeRequestEntity request) {
-        // Verifica se o usuário está autenticado (verifique o login do usuário, por exemplo, pelo contexto de segurança)
         if (request.getRequester() == null || request.getRequestedBook() == null || request.getOfferedBook() == null) {
             return ResponseEntity.badRequest().body("Os campos de usuário e livros são obrigatórios.");
         }
 
-        // Verifica se o usuário existe
         if (!userService.findByEmail(request.getRequester()).isPresent()) {
             return ResponseEntity.status(404).body("Usuário não encontrado.");
         }
 
-        // Cria a solicitação de troca
         ExchangeRequestEntity createdRequest = exchangeRequestService.createExchangeRequest(request);
-        return ResponseEntity.status(201).body(createdRequest); // Retornando 201 (Created)
+        return ResponseEntity.status(201).body(createdRequest);
     }
 
     @GetMapping("/requests")
@@ -45,46 +43,36 @@ public class ExchangeRequestController {
         return ResponseEntity.ok(requests);
     }
 
-    // Novo endpoint para listar solicitações pendentes
-    @GetMapping("/pending")
-    public ResponseEntity<List<ExchangeRequestEntity>> listPendingRequests() {
-        List<ExchangeRequestEntity> pendingRequests = exchangeRequestService.findRequestsByStatus(ExchangeStatus.PENDING);
-        return ResponseEntity.ok(pendingRequests); // Usando o enum ExchangeStatus
+    @GetMapping("/requests/for-owner")
+    public ResponseEntity<List<ExchangeRequestEntity>> listRequestsForBookOwner(Principal principal) {
+        String email = principal.getName(); // Obtém o e-mail do usuário autenticado
+        List<ExchangeRequestEntity> requests = exchangeRequestService.findRequestsByRequestedBookOwner(email);
+        return ResponseEntity.ok(requests);
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<?> updateExchangeStatus(@PathVariable Long id, @RequestBody Map<String, String> statusMap) {
-        try {
-            // Extrair o valor do campo 'status' do JSON
-            String statusValue = statusMap.get("status");
+        String statusValue = statusMap.get("status");
 
-            // Verifica se o status enviado é válido
-            if (statusValue == null || statusValue.isEmpty()) {
-                return ResponseEntity.badRequest().body("O campo 'status' é obrigatório.");
-            }
-
-            // Valida se o status é um valor permitido
-            ExchangeStatus exchangeStatus;
-            try {
-                exchangeStatus = ExchangeStatus.valueOf(statusValue.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return ResponseEntity.badRequest().body("Status inválido."); // Retorna erro 400 para status inválido
-            }
-
-            // Atualiza o status da solicitação
-            ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, exchangeStatus);
-            if (updatedRequest == null) {
-                return ResponseEntity.notFound().build(); // Retorna 404 se não encontrar a solicitação
-            }
-
-            // Notifica o usuário que recebeu a troca
-            String message = "Sua solicitação de troca foi " + statusValue.toLowerCase() + ".";
-            notificationService.createNotification(updatedRequest.getRequester(), message);
-
-            return ResponseEntity.ok(updatedRequest);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Erro interno ao atualizar o status da solicitação.");
+        if (statusValue == null || statusValue.isEmpty()) {
+            return ResponseEntity.badRequest().body("O campo 'status' é obrigatório.");
         }
+
+        ExchangeStatus exchangeStatus;
+        try {
+            exchangeStatus = ExchangeStatus.valueOf(statusValue.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Status inválido.");
+        }
+
+        ExchangeRequestEntity updatedRequest = exchangeRequestService.updateStatus(id, exchangeStatus);
+        if (updatedRequest == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String message = "Sua solicitação de troca foi " + statusValue.toLowerCase() + ".";
+        notificationService.createNotification(updatedRequest.getRequester(), message);
+
+        return ResponseEntity.ok(updatedRequest);
     }
 }
-
