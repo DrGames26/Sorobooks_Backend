@@ -43,6 +43,13 @@ public class ExchangeRequestController {
         return ResponseEntity.ok(requests);
     }
 
+    @GetMapping("/pending")
+    public ResponseEntity<List<ExchangeRequestEntity>> listPendingExchanges(Principal principal) {
+        String email = principal.getName(); // Obtém o e-mail do usuário autenticado
+        List<ExchangeRequestEntity> pendingRequests = exchangeRequestService.findPendingRequestsByUser(email);
+        return ResponseEntity.ok(pendingRequests);
+    }
+
     @GetMapping("/requests/for-owner")
     public ResponseEntity<List<ExchangeRequestEntity>> listRequestsForBookOwner(Principal principal) {
         String email = principal.getName(); // Obtém o e-mail do usuário autenticado
