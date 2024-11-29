@@ -1,19 +1,28 @@
 package com.example.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExchangeRequestService {
 
-    private final ExchangeRequestRepository exchangeRequestRepository;
+    @Autowired
+    private ExchangeRequestRepository exchangeRequestRepository;
 
-    public ExchangeRequestService(ExchangeRequestRepository exchangeRequestRepository) {
-        this.exchangeRequestRepository = exchangeRequestRepository;
-    }
+    @Autowired
+    private BookRepository bookRepository;  // Supondo que exista um repositório de livros
 
     public ExchangeRequestEntity createExchangeRequest(ExchangeRequestEntity request) {
+        // Validar se os livros existem antes de criar a solicitação
+        if (request.getRequestedBook() == null || request.getOfferedBook() == null
+                || !bookRepository.existsById(request.getRequestedBook().getId())
+                || !bookRepository.existsById(request.getOfferedBook().getId())) {
+            throw new RuntimeException("Um ou mais livros não existem.");
+        }
+
         return exchangeRequestRepository.save(request);
     }
 
@@ -21,18 +30,21 @@ public class ExchangeRequestService {
         return exchangeRequestRepository.findAll();
     }
 
-    public List<ExchangeRequestEntity> findPendingRequestsByUser(String email) {
-        return exchangeRequestRepository.findByStatusAndRequestedBookOwner(ExchangeStatus.PENDING, email);
+    public Optional<ExchangeRequestEntity> findById(Long id) {
+        return exchangeRequestRepository.findById(id);
     }
 
-    public List<ExchangeRequestEntity> findRequestsByRequestedBookOwner(String email) {
-        return exchangeRequestRepository.findByRequestedBookOwner(email);
+    public List<ExchangeRequestEntity> findRequestsByStatus(ExchangeStatus status) {
+        return exchangeRequestRepository.findByStatus(status);  // Método corrigido para receber ExchangeStatus
     }
 
     public ExchangeRequestEntity updateStatus(Long id, ExchangeStatus status) {
-        return exchangeRequestRepository.findById(id).map(request -> {
+        Optional<ExchangeRequestEntity> optionalRequest = exchangeRequestRepository.findById(id);
+        if (optionalRequest.isPresent()) {
+            ExchangeRequestEntity request = optionalRequest.get();
             request.setStatus(status);
             return exchangeRequestRepository.save(request);
-        }).orElse(null);
+        }
+        return null;
     }
 }
