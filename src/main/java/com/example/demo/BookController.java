@@ -43,7 +43,10 @@ public class BookController {
     }
 
     @GetMapping("/list")
-    public List<BookEntity> listBooks() {
+    public List<BookEntity> listBooks(@RequestParam(value = "query", required = false) String query) {
+        if (query != null && !query.isEmpty()) {
+            return bookService.searchBooks(query);
+        }
         return bookService.findAllBooks();
     }
 
